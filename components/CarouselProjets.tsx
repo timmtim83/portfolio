@@ -83,7 +83,6 @@ export default function CarouselProjets({
     emoji: string;
 }) {
     const [selected, setSelected] = useState<Projet | null>(null);
-    const [expanded, setExpanded] = useState(false);
     const [paused, setPaused] = useState(false);
     const [hoveredImg, setHoveredImg] = useState(0);
     const [dragging, setDragging] = useState(false);
@@ -140,7 +139,8 @@ export default function CarouselProjets({
     const nomType = (t: Projet["type"]) =>
         t === "video" ? "Vidéo" : t === "audio" ? "Audio" : t === "interactif" ? "Interactif" : "Image";
 
-    const boucle = [...projets, ...projets];
+    const repeats = Math.max(2, Math.ceil(8 / projets.length));
+    const boucle = Array.from({ length: repeats }, () => projets).flat();
 
     return (
         <div
@@ -189,7 +189,6 @@ export default function CarouselProjets({
                                         icone={icone}
                                         onClick={() => {
                                             if (Math.abs(x.get() - xStart.current) > 5) return;
-                                            setExpanded(false);
                                             setHoveredImg(0);
                                             setSelected(p);
                                         }}
@@ -214,11 +213,7 @@ export default function CarouselProjets({
                     transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
                     className="flex min-h-screen items-center justify-center px-6 py-16"
                 >
-                    <div
-                        onMouseEnter={() => setExpanded(true)}
-                        onMouseLeave={() => setExpanded(false)}
-                        className="neu relative flex w-full max-w-[860px] cursor-pointer flex-col items-center rounded-3xl px-12 py-10 text-center"
-                    >
+                    <div className="neu relative flex w-full max-w-[860px] cursor-pointer flex-col items-center rounded-3xl px-12 py-10 text-center">
                         <div className="neu-xs mb-4 flex items-center gap-2 rounded-full px-4 py-1.5">
                             <span className="text-sm">{icone(selected.type)}</span>
                             <span className="text-xs font-medium uppercase tracking-wider text-midnight/60">
@@ -231,153 +226,141 @@ export default function CarouselProjets({
 
                         <div className="neu-line mt-6 w-3/4 rounded-full" />
 
-                        <AnimatePresence initial={false}>
-                            {expanded && (
-                                <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: "auto" }}
-                                    exit={{ opacity: 0, height: 0 }}
-                                    transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-                                    className="w-full"
-                                >
-                                    {selected.type === "audio" && selected.media && (
-                                        <NeuAudioPlayer src={selected.media} />
-                                    )}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+                            className="w-full"
+                        >
+                            {selected.type === "audio" && selected.media && (
+                                <NeuAudioPlayer src={selected.media} />
+                            )}
 
-                                    {selected.type === "video" && selected.media?.includes("youtube") && (
-                                        <NeuVideoPlayer
-                                            src={selected.media}
-                                            poster={selected.image}
-                                            titre={selected.titre}
-                                            vertical={selected.vertical ?? true}
-                                        />
-                                    )}
+                            {selected.type === "video" && selected.media?.includes("youtube") && (
+                                <NeuVideoPlayer
+                                    src={selected.media}
+                                    poster={selected.image}
+                                    titre={selected.titre}
+                                    vertical={selected.vertical ?? true}
+                                />
+                            )}
 
-                                    {selected.type === "interactif" && selected.lien && (
-                                        <div className="mt-6 flex flex-col items-center">
-                                            {selected.image && (
-                                                <div className="neu-pressed relative mx-auto h-[280px] w-full max-w-[480px] overflow-hidden rounded-2xl">
-                                                    <Image
-                                                        src={selected.image}
-                                                        alt={selected.titre}
-                                                        fill
-                                                        sizes="960px"
-                                                        className="object-cover"
-                                                    />
-                                                </div>
-                                            )}
-
-                                            <motion.a
-                                                href={selected.lien}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                onClick={(e) => e.stopPropagation()}
-                                                whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
-                                                whileTap={{ scale: 0.96 }}
-                                                className="neu neu-btn neu-focus mt-6 flex items-center gap-3 rounded-2xl px-8 py-4 text-sm font-medium text-midnight"
-                                            >
-                                                Consulter le projet <span aria-hidden>&#8599;</span>
-                                            </motion.a>
-                                        </div>
-                                    )}
-
-                                    {selected.type === "image" && selected.images && (
-                                        <div className="mt-8 flex flex-col items-center">
-                                            <div className="relative h-[420px] w-full max-w-[560px]">
-                                                {selected.images.map((img, i) => {
-                                                    const actif = hoveredImg === i;
-                                                    return (
-                                                        <motion.div
-                                                            key={img}
-                                                            onMouseEnter={() => setHoveredImg(i)}
-                                                            initial={{ opacity: 0, y: 30 }}
-                                                            animate={{
-                                                                opacity: 1,
-                                                                x: actif ? 0 : i * 26,
-                                                                y: actif ? -14 : i * 18,
-                                                                rotate: actif ? 0 : i * 1.5,
-                                                                scale: actif ? 1.04 : 1 - i * 0.03,
-                                                                zIndex: actif ? 50 : 10 - i,
-                                                            }}
-                                                            transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-                                                            className="neu absolute left-1/2 top-0 h-[360px] w-[400px] -translate-x-1/2 cursor-pointer rounded-3xl p-3"
-                                                        >
-                                                            <div className="neu-pressed relative h-full w-full overflow-hidden rounded-2xl">
-                                                                <Image
-                                                                    src={img}
-                                                                    alt={`${selected.titre} ${i + 1}`}
-                                                                    fill
-                                                                    sizes="800px"
-                                                                    unoptimized={img.endsWith(".gif")}
-                                                                    className="object-contain p-2"
-                                                                />
-                                                            </div>
-
-                                                            <div className="neu-dot absolute bottom-6 right-6 flex h-8 w-8 items-center justify-center rounded-full">
-                                                                <span className="text-xs font-bold text-midnight/60">{i + 1}</span>
-                                                            </div>
-                                                        </motion.div>
-                                                    );
-                                                })}
-                                            </div>
-
-                                            <div className="mt-6 flex items-center gap-5">
-                                                <motion.button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setHoveredImg((i) => (i - 1 + selected.images!.length) % selected.images!.length);
-                                                    }}
-                                                    whileHover={{ scale: 1.08, transition: { duration: 0.25 } }}
-                                                    whileTap={{ scale: 0.94 }}
-                                                    className="neu neu-btn neu-focus flex h-12 w-12 items-center justify-center rounded-full text-lg text-midnight"
-                                                    aria-label="Image précédente"
-                                                >
-                                                    &larr;
-                                                </motion.button>
-
-                                                <div className="neu-pressed rounded-full px-4 py-1.5">
-                                                    <span className="text-xs font-medium text-midnight/60">
-                                                        {hoveredImg + 1} / {selected.images.length}
-                                                    </span>
-                                                </div>
-
-                                                <motion.button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setHoveredImg((i) => (i + 1) % selected.images!.length);
-                                                    }}
-                                                    whileHover={{ scale: 1.08, transition: { duration: 0.25 } }}
-                                                    whileTap={{ scale: 0.94 }}
-                                                    className="neu neu-btn neu-focus flex h-12 w-12 items-center justify-center rounded-full text-lg text-midnight"
-                                                    aria-label="Image suivante"
-                                                >
-                                                    &rarr;
-                                                </motion.button>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {selected.type === "image" && !selected.images && selected.image && (
-                                        <div className="neu-pressed relative mx-auto mt-6 h-[380px] w-full max-w-[520px] overflow-hidden rounded-2xl">
+                            {selected.type === "interactif" && selected.lien && (
+                                <div className="mt-6 flex flex-col items-center">
+                                    {selected.image && (
+                                        <div className="neu-pressed relative mx-auto h-[280px] w-full max-w-[480px] overflow-hidden rounded-2xl">
                                             <Image
                                                 src={selected.image}
                                                 alt={selected.titre}
                                                 fill
-                                                sizes="1040px"
-                                                unoptimized={selected.image.endsWith(".gif")}
-                                                className="object-contain p-3"
+                                                sizes="960px"
+                                                className="object-cover"
                                             />
                                         </div>
                                     )}
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
 
-                        {!expanded && (
-                            <div className="neu-xs mt-6 rounded-full px-5 py-2">
-                                <p className="text-xs text-midnight/50">Survolez pour découvrir</p>
-                            </div>
-                        )}
+                                    <motion.a
+                                        href={selected.lien}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={(e) => e.stopPropagation()}
+                                        whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
+                                        whileTap={{ scale: 0.96 }}
+                                        className="neu neu-btn neu-focus mt-6 flex items-center gap-3 rounded-2xl px-8 py-4 text-sm font-medium text-midnight"
+                                    >
+                                        Consulter le projet <span aria-hidden>&#8599;</span>
+                                    </motion.a>
+                                </div>
+                            )}
+
+                            {selected.type === "image" && selected.images && (
+                                <div className="mt-8 flex flex-col items-center">
+                                    <div className="relative h-[420px] w-full max-w-[560px]">
+                                        {selected.images.map((img, i) => {
+                                            const actif = hoveredImg === i;
+                                            return (
+                                                <motion.div
+                                                    key={img}
+                                                    initial={{ opacity: 0, y: 30 }}
+                                                    animate={{
+                                                        opacity: 1,
+                                                        x: actif ? 0 : Math.min(Math.abs(i - hoveredImg), 3) * 26,
+                                                        y: actif ? -14 : Math.min(Math.abs(i - hoveredImg), 3) * 14,
+                                                        rotate: actif ? 0 : Math.min(Math.abs(i - hoveredImg), 3) * 1.5,
+                                                        scale: actif ? 1.04 : 1 - Math.min(Math.abs(i - hoveredImg), 3) * 0.04,
+                                                        zIndex: actif ? 50 : 30 - Math.abs(i - hoveredImg),
+                                                    }}
+                                                    transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
+                                                    className="neu absolute left-1/2 top-0 h-[360px] w-[400px] -translate-x-1/2 rounded-3xl p-3"
+                                                >
+                                                    <div className="neu-pressed relative h-full w-full overflow-hidden rounded-2xl">
+                                                        <Image
+                                                            src={img}
+                                                            alt={`${selected.titre} ${i + 1}`}
+                                                            fill
+                                                            sizes="800px"
+                                                            unoptimized={img.endsWith(".gif")}
+                                                            className="object-contain p-2"
+                                                        />
+                                                    </div>
+
+                                                    <div className="neu-dot absolute bottom-6 right-6 flex h-8 w-8 items-center justify-center rounded-full">
+                                                        <span className="text-xs font-bold text-midnight/60">{i + 1}</span>
+                                                    </div>
+                                                </motion.div>
+                                            );
+                                        })}
+                                    </div>
+
+                                    <div className="mt-6 flex items-center gap-5">
+                                        <motion.button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setHoveredImg((i) => (i - 1 + selected.images!.length) % selected.images!.length);
+                                            }}
+                                            whileHover={{ scale: 1.08, transition: { duration: 0.25 } }}
+                                            whileTap={{ scale: 0.94 }}
+                                            className="neu neu-btn neu-focus flex h-12 w-12 items-center justify-center rounded-full text-lg text-midnight"
+                                            aria-label="Image précédente"
+                                        >
+                                            &larr;
+                                        </motion.button>
+
+                                        <div className="neu-pressed rounded-full px-4 py-1.5">
+                                            <span className="text-xs font-medium text-midnight/60">
+                                                {hoveredImg + 1} / {selected.images.length}
+                                            </span>
+                                        </div>
+
+                                        <motion.button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setHoveredImg((i) => (i + 1) % selected.images!.length);
+                                            }}
+                                            whileHover={{ scale: 1.08, transition: { duration: 0.25 } }}
+                                            whileTap={{ scale: 0.94 }}
+                                            className="neu neu-btn neu-focus flex h-12 w-12 items-center justify-center rounded-full text-lg text-midnight"
+                                            aria-label="Image suivante"
+                                        >
+                                            &rarr;
+                                        </motion.button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {selected.type === "image" && !selected.images && selected.image && (
+                                <div className="neu-pressed relative mx-auto mt-6 h-[380px] w-full max-w-[520px] overflow-hidden rounded-2xl">
+                                    <Image
+                                        src={selected.image}
+                                        alt={selected.titre}
+                                        fill
+                                        sizes="1040px"
+                                        unoptimized={selected.image.endsWith(".gif")}
+                                        className="object-contain p-3"
+                                    />
+                                </div>
+                            )}
+                        </motion.div>
 
                         <button
                             onClick={() => setSelected(null)}

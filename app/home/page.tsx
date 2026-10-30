@@ -69,7 +69,7 @@ export default function HomePage() {
             transition={{ duration: 0.6 }}
             className="min-h-screen overflow-hidden"
         >
-            {/* Le clone volant */}
+            {/* Clone volant de la rubrique cliquée */}
             <AnimatePresence>
                 {flying && !arrived && (
                     <motion.div
@@ -83,7 +83,11 @@ export default function HomePage() {
                         }}
                         animate={{
                             top: [flying.rect.top, flying.rect.top - 60, window.innerHeight / 2 - 30],
-                            left: [flying.rect.left, flying.rect.left, window.innerWidth / 2 - flying.rect.width / 2],
+                            left: [
+                                flying.rect.left,
+                                flying.rect.left,
+                                window.innerWidth / 2 - flying.rect.width / 2,
+                            ],
                             rotateY: [0, 180, 360],
                             scale: [1, 1.15, 1.3],
                             opacity: [1, 1, 0],
@@ -112,21 +116,7 @@ export default function HomePage() {
                 />
 
                 <main className="relative h-[calc(100vh-80px)] w-full">
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
-                        whileHover={{
-                            scale: 1.05,
-                            transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] },
-                        }}
-                        className="neu-xs absolute left-1/2 top-6 z-30 -translate-x-1/2 cursor-default rounded-full px-6 py-2"
-                    >
-                        <p className="text-sm text-midnight/50">
-                            Choisissez une catégorie pour découvrir mes projets
-                        </p>
-                    </motion.div>
-
+                    {/* Socle neumorphe */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -136,23 +126,6 @@ export default function HomePage() {
                     />
 
                     <Scene3D selected={selected} />
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.9, delay: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
-                        whileHover={{
-                            scale: 1.04,
-                            transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] },
-                        }}
-                        className="absolute bottom-14 left-1/2 z-10 -translate-x-1/2 rounded-2xl bg-midnight px-8 py-4 shadow-[8px_8px_20px_rgba(15,14,71,0.25)]"
-                    >
-                        <p className="whitespace-nowrap text-lg font-light">
-                            <span className="glow-title">
-                                Timéo VINCENT - <span className="font-semibold">Webdesigner</span>
-                            </span>
-                        </p>
-                    </motion.div>
                 </main>
             </motion.div>
         </motion.div>

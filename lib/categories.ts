@@ -6,7 +6,7 @@ export type Category = {
 };
 
 export const categories: Category[] = [
-    { icon: "📚", label: "Projets Scolaires", detail: "Travaux réalisés en cours", href: "/projets-scolaires" },
-    { icon: "🎨", label: "Projets personnels", detail: "Création sur mon temps libre", href: "/projets-personnels" },
-    { icon: "💼", label: "Projets de stage", detail: "Missions en entreprise", href: "/projets-stage"},
+    { icon: "🖥️", label: "UX / UI & Interactif", detail: "Design d'interfaces et d'expériences immersives", href: "/ui-ux" },
+    { icon: "🎬", label: "Motion & 3D", detail: "Animation, modélisation et audiovisuel", href: "/motion-3d" },
+    { icon: "🎨", label: "Graphisme & Print", detail: "Réalisations d'identités visuelle, d'édition et signalétique", href: "/graphisme" },
 ];

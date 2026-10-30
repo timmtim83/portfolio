@@ -17,7 +17,7 @@ function Screen({ selected }: { selected: Category | null }) {
     scene.traverse((child) => {
         if (child instanceof THREE.Mesh && child.material) {
             child.material = child.material.clone();
-            child.material.color.set("#dde3ec");
+            child.material.color.set("#cfd5e0");
         }
     });
 
@@ -50,11 +50,11 @@ function Screen({ selected }: { selected: Category | null }) {
             <primitive
                 object={scene}
                 scale={0.22}
-                position={[0, -0.30, 0]}
+                position={[0, -0.5, 0]}
                 rotation={[0, Math.PI / 2, 0]}
             />
 
-            <Html transform position={[0, 0.50, 0.10]} scale={0.20}>
+            <Html transform position={[0, 0.30, 0.10]} scale={0.17}>
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={selected ? selected.label : "accueil"}
@@ -63,17 +63,25 @@ function Screen({ selected }: { selected: Category | null }) {
                         exit={{ opacity: 0, y: 40 }}
                         transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
                         whileHover={{
-                            scale: 1.10,
+                            scale: 1.06,
                             transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] },
                         }}
-                        className="rounded-3xl bg-[#e0e5ec] px-10 py-6 shadow-[8px_8px_20px_rgba(15,14,71,0.25)]"
+                        className="rounded-3xl bg-[#e0e5ec] px-12 py-8 shadow-[8px_8px_20px_rgba(15,14,71,0.25)]"
                     >
-                        <h1
-                            className={`whitespace-nowrap font-bold text-midnight ${selected ? "text-4xl" : "text-5xl"
-                                }`}
-                        >
-                            {selected ? `${selected.icon} ${selected.label}` : "Bienvenue !"}
-                        </h1>
+                        {selected ? (
+                            <h1 className="whitespace-nowrap text-4xl font-bold text-midnight">
+                                {selected.icon} {selected.label}
+                            </h1>
+                        ) : (
+                            <div className="text-center">
+                                <h1 className="whitespace-nowrap text-5xl font-bold tracking-tight text-midnight">
+                                    Timéo VINCENT
+                                </h1>
+                                <p className="mt-3 whitespace-nowrap text-2xl font-light text-midnight/60">
+                                    Designer UI/UX - Graphiste
+                                </p>
+                            </div>
+                        )}
                     </motion.div>
                 </AnimatePresence>
             </Html>
@@ -97,10 +105,10 @@ export default function Scene3D({ selected }: { selected: Category | null }) {
             <Suspense fallback={null}>
                 <Screen selected={selected} />
                 <ContactShadows
-                    position={[0, -0.55, 0]}
-                    opacity={0.25}
+                    position={[0, -1.0, 0]}
+                    opacity={0.5}
                     blur={2}
-                    far={1.5}
+                    far={2}
                     color="#0f0e47"
                 />
                 <Environment preset="studio" environmentIntensity={0.10} />
