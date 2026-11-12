@@ -19,14 +19,12 @@ export default function NeuVideoPlayer({
 
     return (
         <div
-            className={`neu mx-auto mt-6 rounded-3xl p-4 ${
-                vertical ? "w-full max-w-[260px]" : "w-full max-w-[560px]"
-            }`}
+            className={`neu mx-auto mt-6 rounded-3xl p-4 ${vertical ? "w-full max-w-[260px]" : "w-full max-w-[560px]"
+                }`}
         >
             <div
-                className={`neu-pressed relative overflow-hidden rounded-2xl ${
-                    vertical ? "aspect-[9/16]" : "aspect-video"
-                }`}
+                className={`neu-pressed relative overflow-hidden rounded-2xl ${vertical ? "aspect-[9/16]" : "aspect-video"
+                    }`}
             >
                 <AnimatePresence mode="wait">
                     {!loaded ? (

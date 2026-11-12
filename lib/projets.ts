@@ -17,7 +17,7 @@ export const uiux: Projet[] = [
 ];
 
 export const motion3d: Projet[] = [
-    { id: "m1", titre: "Projet - Motion Design - JO", description: "S'approprier une marque et en créer une identité visuelle", type: "video", image: "/projets/logo-jo.webp", media: "https://www.youtube.com/embed/7X4ZEA6hpwUs", vertical: true },
+    { id: "m1", titre: "Projet - Motion Design - JO", description: "S'approprier une marque et en créer une identité visuelle", type: "video", image: "/projets/logo-jo.webp", media: "https://www.youtube.com/embed/7X4ZEA6hpwU", vertical: true },
     { id: "m2", titre: "Projet - Motion Design - Song", description: "Travail d'effets visuels et de transitions autour d'une musique", type: "video", image: "/projets/miniature-song.webp", media: "https://www.youtube.com/embed/rbdMWDxqcTs", vertical: true },
     { id: "m3", titre: "Motion Design Tutoriel", description: "Création d'un motion design destiné aux clients, pour faciliter l'envoi de fichiers", type: "video", image: "/projets/stage/miniature-motion-tuto.webp", media: "https://www.youtube.com/embed/QiNnxgR7J4A", vertical: false },
     { id: "m4", titre: "Projet audiovisuel", description: "Créer une histoire et une atmosphère à travers de l'audio", type: "audio", media: "/projets/the_last_call.wav" },
